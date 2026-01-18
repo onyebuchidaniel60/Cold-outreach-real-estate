@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Google real estate Keywords Outreach</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-top: 6px;
+    }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    .note { font-size: 0.9rem; color: #555; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <h1>Google real estate cold outreach</h1>
+
+  <form
+    id="instagramForm"
+    action="https://n8n.srv1213806.hstgr.cloud/webhook/3cc2eb98-6dac-4a8c-b6bc-f8aa539cb95e"
+    method="POST"
+  >
+
+    <label for="instagramKeywords">Enter keywords for Instagram leads</label>
+    <input
+      type="text"
+      id="instagramKeywords"
+      name="instagramKeywords"
+      placeholder="fitness coach, real estate, skincare brand"
+      required
+    />
+    <div class="note">Separate multiple keywords with commas or enter single keywords.</div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    // Normalize the input into a clean comma-separated string and then
+    // allow the browser to submit the form (application/x-www-form-urlencoded).
+    function normalizeKeywords(str) {
+      if (!str) return '';
+      return str
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .join(',');
+    }
+
+    document.getElementById('instagramForm').addEventListener('submit', function (e) {
+      // replace the input value with the normalized CSV string before submit
+      const input = document.getElementById('instagramKeywords');
+      input.value = normalizeKeywords(input.value);
+      // DO NOT call fetch() — allow native form POST so n8n parses it reliably
+    });
+  </script>
+
+</body>
+</html>
