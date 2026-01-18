@@ -1,0 +1,1068 @@
+{
+  "name": "real estate clients cold outreach campaign",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6f23067a-3c19-4152-805e-c31b2fb7c6fb",
+              "leftValue": "={{ $json.body.instagramKeywords }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -544,
+        272
+      ],
+      "id": "341f20ab-e987-4073-a3e9-20b55c29a566",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1664,
+        224
+      ],
+      "id": "3ab56d74-040a-4a7a-a429-6c21159711b0",
+      "name": "Loop Over Items",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2736,
+        240
+      ],
+      "id": "ca2f02b9-c686-4954-90f9-bd2c183cda53",
+      "name": "Wait",
+      "webhookId": "f6f60920-539d-4d6b-9294-15885813ac55"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d26cf740-9298-4159-874f-aa33956a7394",
+              "name": "keywords",
+              "value": "={{ $json.body.instagramKeywords.split(',').map(item => item.trim()).filter(item => item.length > 0) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        256
+      ],
+      "id": "2626d39c-76c3-473a-8b44-b33e51ade1e9",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "emails",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        240,
+        256
+      ],
+      "id": "d20349e2-a4c0-4191-8619-058463e0cdb2",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "url": "https://api.verify-email.app/v1/verify",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "input",
+              "value": "={{ $json.emails }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "fb2b7bfb23f9e3c2a251d49a58191dc9a7bb65b107eb9e6c02b09ead0bb233ca"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 10,
+              "batchInterval": 2000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1728,
+        544
+      ],
+      "id": "66e4575e-c0ca-4c66-b8ec-134ae6d1896b",
+      "name": "HTTP Request",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        720,
+        256
+      ],
+      "id": "b780c0a0-7c71-4be3-ac77-926b901b9834",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bc1fc85c-efb8-4282-aa71-34cf1141f645",
+              "name": "title",
+              "value": "={{ $('Loop Over Items1').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "760998f0-9b88-4637-b162-3d6212c7501a",
+              "name": "phone",
+              "value": "={{ $('Loop Over Items1').item.json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "cd224f50-d91e-4af3-8caa-2f053b4b4770",
+              "name": "phoneunformatted",
+              "value": "={{ $('Loop Over Items1').item.json.phoneUnformatted }}",
+              "type": "string"
+            },
+            {
+              "id": "7884aafb-f2ed-417a-b259-03d082ddabe2",
+              "name": "website",
+              "value": "={{ $('Loop Over Items1').item.json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "e38b3187-700a-4daa-9c3a-ad06a4f8b7db",
+              "name": "email",
+              "value": "={{ $json.email_address }}",
+              "type": "string"
+            },
+            {
+              "id": "86e746b5-bf05-4f2d-9dbc-2886b485838a",
+              "name": "address",
+              "value": "={{ $('Loop Over Items1').item.json.address }}",
+              "type": "string"
+            },
+            {
+              "id": "cc550c59-30e6-4388-977f-68478ef7efc3",
+              "name": "city",
+              "value": "={{ $('Loop Over Items1').item.json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "5e1a77fe-3213-4d30-8e99-e8b611f8b646",
+              "name": "state",
+              "value": "={{ $('Loop Over Items1').item.json.state }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2256,
+        528
+      ],
+      "id": "e271dc65-b714-4808-b9e1-a23d2f341039",
+      "name": "Edit Fields2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2704,
+        768
+      ],
+      "id": "ec7c1477-fa72-4a0b-986b-602a225a7df5",
+      "name": "Wait1",
+      "webhookId": "7f7de72d-31c3-4196-b979-606bc694c59a",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "efd4406a-d5a2-4bae-b664-7c52121c357d",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "94ac8193-d7c6-4732-b13b-99688e877f02",
+              "leftValue": "={{ $json.deliverable }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3deb5074-5527-4a3c-a783-5addc4a6ae61",
+              "leftValue": "={{ $json.block }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "39d9c5e1-ab46-4b43-96b9-139717098f7e",
+              "leftValue": "={{ $json.disposable }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2000,
+        544
+      ],
+      "id": "cbe1e207-2200-4542-b8b7-34a658ae35a9",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        768,
+        544
+      ],
+      "id": "f7c08bfc-33f9-4cf2-bbb7-d3a0bd53616a",
+      "name": "Wait2",
+      "webhookId": "2740559d-7207-4bc4-9c66-a736b762cf0f"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "={{ $json.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.Body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2432,
+        240
+      ],
+      "id": "1edb416a-0322-4c07-b37e-002c20540589",
+      "name": "Send a message",
+      "webhookId": "0808ef88-93b2-4dbb-bfae-2bcb74b85184",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qAhkpGWBH3n7WP8d",
+          "name": "Gmail account buchi nnamani"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "89c61f2d-4853-45e6-b3c6-66720db3bc80",
+              "name": "Subject",
+              "value": "Quick question about your listing pipeline",
+              "type": "string"
+            },
+            {
+              "id": "0c6a1382-6242-4961-a4cc-98918a01ddef",
+              "name": "Body",
+              "value": "=Hi,\n\nQuick question, when new homeowners in your area decide to sell, how do they usually find your team?\n\nZillow and referrals are great, but they only capture sellers who are already looking.\nThere’s a much larger group of homeowners who are thinking about selling but haven’t raised their hand yet, and that’s where most listings are won.\n\nWe help real estate teams quietly reach these homeowners first using a multi-channel outbound engine (email, LinkedIn) that starts real conversations with:\n\n• Homeowners planning to sell in the next 3–12 months\n• Investors looking to buy in your area\n• Expired and off-market opportunities\n\nThis isn’t “branding” or ads — it’s direct conversations that turn into listing appointments and deals.\n\nWould you be open to seeing how many motivated sellers and buyers we can put in your pipeline each month in {{ $json.city }}?\n\nIf it looks useful, I can show you a short breakdown.\n\nBest,\nBuchi Nnamani\nOutreach Specialist for Real Estate Professionals",
+              "type": "string"
+            },
+            {
+              "id": "7aad2192-9ab6-4cac-8eb6-daa602d9270d",
+              "name": "Email",
+              "value": "={{ $json.data[0].email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2064,
+        240
+      ],
+      "id": "72ef9bd4-b060-40e6-a7cd-fa876b5de380",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "value": "nwua9Gu5YrADL7ZDj",
+          "mode": "list",
+          "cachedResultName": "Google Maps Scraper (compass/crawler-google-places)",
+          "cachedResultUrl": "https://console.apify.com/actors/nwua9Gu5YrADL7ZDj/input"
+        },
+        "customBody": "={\n    \"searchStringsArray\": {{ $json.keywords }},\n    \"locationQuery\": \"New York, USA\",\n    \"maxCrawledPlacesPerSearch\": 20,\n    \"language\": \"en\",\n    \"searchMatching\": \"all\",\n    \"placeMinimumStars\": \"\",\n    \"website\": \"allPlaces\",\n    \"skipClosedPlaces\": true,\n    \"scrapePlaceDetailPage\": false,\n    \"scrapeTableReservationProvider\": false,\n    \"includeWebResults\": false,\n    \"scrapeDirectories\": false,\n    \"maxQuestions\": 0,\n\"categoryFilterWords\": [\"estate agent\",\"real estate\",\"real estate agency\"],\n    \"scrapeContacts\": true,\n    \"scrapeSocialMediaProfiles\": {\n        \"facebooks\": false,\n        \"instagrams\": false,\n        \"youtubes\": false,\n        \"tiktoks\": false,\n        \"twitters\": false\n    },\n    \"ltc1qs49erv7pzeczp5qlnxd46aufzapsmzpa7y73ct\": 0,\n    \"maxReviews\": 0,\n    \"reviewsSort\": \"newest\",\n    \"reviewsFilterString\": \"\",\n    \"reviewsOrigin\": \"all\",\n    \"scrapeReviewsPersonalData\": true,\n    \"maxImages\": 0,\n    \"scrapeImageAuthors\": false,\n    \"allPlacesNoSearchAction\": \"\"\n}",
+        "timeout": 3600
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        16,
+        256
+      ],
+      "id": "6dbc015b-a31d-468f-9394-ff43e20420d6",
+      "name": "scrape real estate clients google maps1",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "apifyApi": {
+          "id": "aKiissAMhPe4WNEQ",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "emails",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        544
+      ],
+      "id": "d354b94d-cca8-46d2-bc97-c2db63235713",
+      "name": "Split Out",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bc1fc85c-efb8-4282-aa71-34cf1141f645",
+              "name": "title",
+              "value": "={{ $('Loop Over Items').item.json.data[0].title }} ",
+              "type": "string"
+            },
+            {
+              "id": "760998f0-9b88-4637-b162-3d6212c7501a",
+              "name": "phone",
+              "value": "={{ $('Loop Over Items').item.json.data[0].phone}} ",
+              "type": "string"
+            },
+            {
+              "id": "cd224f50-d91e-4af3-8caa-2f053b4b4770",
+              "name": "phoneUnformatted",
+              "value": "={{ $('Loop Over Items').item.json.data[0].phoneunformatted }} ",
+              "type": "string"
+            },
+            {
+              "id": "e38b3187-700a-4daa-9c3a-ad06a4f8b7db",
+              "name": "email",
+              "value": "={{ $('Edit Fields').item.json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "86e746b5-bf05-4f2d-9dbc-2886b485838a",
+              "name": "address",
+              "value": "={{ $('Loop Over Items').item.json.data[0].address}} ",
+              "type": "string"
+            },
+            {
+              "id": "cc550c59-30e6-4388-977f-68478ef7efc3",
+              "name": "city",
+              "value": "={{ $('Loop Over Items').item.json.data[0].city }} ",
+              "type": "string"
+            },
+            {
+              "id": "5e1a77fe-3213-4d30-8e99-e8b611f8b646",
+              "name": "state",
+              "value": "={{ $('Loop Over Items').item.json.data[0].state }} ",
+              "type": "string"
+            },
+            {
+              "id": "687b5a6a-ce02-48dc-8e47-eb0be43a5e21",
+              "name": "email_subject",
+              "value": "={{ $('Edit Fields').item.json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "9bd1166e-7e2d-4bef-b692-577bb137d3b7",
+              "name": "email_body",
+              "value": "={{ $('Edit Fields').item.json.Body }}",
+              "type": "string"
+            },
+            {
+              "id": "3dd28200-7724-4272-9a9f-9c87fa9e2221",
+              "name": "website",
+              "value": "={{ $('Loop Over Items').item.json.data[0].website }} ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3056,
+        304
+      ],
+      "id": "04b45093-c4c1-442d-bde5-6120cf7b3a68",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "3cc2eb98-6dac-4a8c-b6bc-f8aa539cb95e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -784,
+        272
+      ],
+      "id": "14ad43fb-833b-42db-8b55-c2a55cfc8e1d",
+      "name": "Webhook1",
+      "webhookId": "3cc2eb98-6dac-4a8c-b6bc-f8aa539cb95e"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FyoYBRnxJJTur3pfiqA6cYiVvJKCKjE1ugzS6Kc3Y6E",
+          "mode": "list",
+          "cachedResultName": "automated cold outreach",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyoYBRnxJJTur3pfiqA6cYiVvJKCKjE1ugzS6Kc3Y6E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 41058820,
+          "mode": "list",
+          "cachedResultName": "real estate client outreach with gmail",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FyoYBRnxJJTur3pfiqA6cYiVvJKCKjE1ugzS6Kc3Y6E/edit#gid=41058820"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "phone": "={{ $json.phone }}",
+            "phoneUnformatted": "={{ $json.phoneUnformatted }}",
+            "website": "={{ $json.website }}",
+            "email": "={{ $json.email }}",
+            "address": "={{ $json.address }}",
+            "city": "={{ $json.city }}",
+            "state": "={{ $json.state }}",
+            "email_subject": "={{ $json.email_subject }}",
+            "email_body": "={{ $json.email_body }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phoneUnformatted",
+              "displayName": "phoneUnformatted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1984,
+        -16
+      ],
+      "id": "19e7ad39-e7f4-4f49-92c3-37d6982b876f",
+      "name": "Add data to real estate client outreach sheet",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Z5dsNX2jnxWck6qn",
+          "name": "updated google sheets buchi nnamani"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8c51b28-402d-4d75-ae75-ac85b8f0bbe7",
+              "name": "processed",
+              "value": "Inavlid emails or empty",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        784
+      ],
+      "id": "8c676b6f-2aa9-468f-84e9-d5632f563d7a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2272,
+        768
+      ],
+      "id": "634f1d80-fed8-4ea7-90c1-67a7a6f97b50",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        544
+      ],
+      "id": "c4fbc3d4-70ff-450e-86a4-327fd42f0ffc",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        768
+      ],
+      "id": "2086513c-e041-4d18-bfb7-1b9281ea52db",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b93e7244-726e-4728-8b00-ebbbf49b0589",
+              "leftValue": "={{ $json.data[0].processed }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        240
+      ],
+      "id": "30a7c594-707d-4155-badc-60394df810ea",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "maxItems": 30
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        448,
+        256
+      ],
+      "id": "435ee68b-4dbd-4cb9-ad4d-5bc840f2ed04",
+      "name": "Limit1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Add data to real estate client outreach sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "scrape real estate clients google maps1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "scrape real estate clients google maps1": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4346c2bb-89bb-4ed9-8ebc-2079681bd305",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "72830bf432026c6e2413b0d51581a1166b5a9283b21862c2057ffdeb236dd2bf"
+  },
+  "id": "TZ1F1PxuiHxLn8ID",
+  "tags": []
+}
